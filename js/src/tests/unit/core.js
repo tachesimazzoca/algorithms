@@ -45,4 +45,20 @@
     var b = new ClassB("baz", 25);
     deepEqual(b.sayHello(), "Hello, call me baz. I'm 25 years old.");
   });
+
+  test("Events", function() {
+    var Util = algsJS.Util;
+
+    var ClassA = function() {};
+    Util.extend(ClassA.prototype, algsJS.Events);
+
+    var a = new ClassA();
+    a.on('update', function(key, n, s, a) {
+      deepEqual(key, 'update');
+      deepEqual(n, 1);
+      deepEqual(s, 'foo');
+      deepEqual(a, ['a', 'b']);
+    });
+    a.trigger('update', 1, 'foo', ['a', 'b']);
+  });
 })();

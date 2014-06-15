@@ -80,4 +80,26 @@ var Bird = Animal.extend({
       return child;
     }
   };
+
+  algsJS.Events = {
+    trigger: function(name) {
+      if (!this._events) return this;
+      var evts = this._events[name];
+      if (evts) {
+        for (var i = 0; i < evts.length; i++) {
+          evts[i].apply(this, arguments);
+        }
+      }
+      return this;
+    }
+
+  , on: function(name, f) {
+      if (typeof(f) === 'function') {
+        this._events = this._events || {};
+        var evts = this._events[name] || (this._events[name] = []);
+        evts.push(f);
+      }
+      return this;
+    }
+  };
 }).call(this);
