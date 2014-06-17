@@ -7,7 +7,7 @@ build: node_modules checkstyle
 	@install -d build/
 	@rm -rf build/*
 	@cp -R src/* build/.
-	@cd build/assets/js/ && cat core.js uf.js sort.js > $(ARTIFACT).js
+	@cd build/assets/js/ && cat core.js uf.js sort.js pq.js > $(ARTIFACT).js
 	@./node_modules/.bin/uglifyjs -nc build/assets/js/$(ARTIFACT).js > build/assets/js/$(ARTIFACT).min.js
 
 .PHONY: checkstyle
