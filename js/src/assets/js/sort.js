@@ -18,7 +18,6 @@
 
   Selection.prototype = {
     sort: function(items, cmp) {
-      this.trigger('start', items);
       var N = items.length;
       for (var i = 0; i < N; i++) {
         var min = i;
@@ -41,7 +40,6 @@
 
   Insertion.prototype = {
     sort: function(items, cmp) {
-      this.trigger('start', items);
       var N = items.length;
       for (var i = 0; i < N; i++) {
         for (var j = i; j > 0; j--) {
@@ -63,7 +61,6 @@
 
   Shell.prototype = {
     sort: function(items, cmp) {
-      this.trigger('start', items);
       var N = items.length;
       // use Knuth's 3x+1 increments
       var h = 1;
@@ -98,16 +95,19 @@
         } else if (hiP > hi) {
           // The right-side aux items are empty. Copy all left-side aux items.
           items[i] = aux[loP - lo];
+          this.trigger('exchanged', items, i, loP - lo);
           loP++;
         } else {
           this.trigger('compare', items, hiP - lo, loP - lo);
           if (cmp(aux[hiP - lo], aux[loP - lo]) < 0) {
             // Copy the current right-side aux item. (left > right)
             items[i] = aux[hiP - lo];
+            this.trigger('exchanged', items, i, hiP - lo);
             hiP++;
           } else {
             // Copy the current left-side aux item. (left <= right)
             items[i] = aux[loP - lo];
+            this.trigger('exchanged', items, i, loP - lo);
             loP++;
           }
         }
@@ -123,7 +123,6 @@
 
   TopDownMerge.prototype = {
     sort: function(items, cmp) {
-      this.trigger('start', items);
       var me = this;
       var divide = function(lo, hi) {
         if (lo >= hi) return;
@@ -146,7 +145,6 @@
 
   BottomUpMerge.prototype = {
     sort: function(items, cmp) {
-      this.trigger('start', items);
       var N = items.length;
       for (var n = 1; n < N; n = n + n) {
         for (var i = 0; i < N - n; i += (n + n)) {
@@ -170,7 +168,6 @@
 
   Quick.prototype = {
     sort: function(items, cmp) {
-      this.trigger('start', items);
       var N = items.length;
       var me = this;
       var partition = function(items, lo, hi) {
@@ -208,7 +205,6 @@
 
   Quick3way.prototype = {
     sort: function(items, cmp) {
-      this.trigger('start', items);
       var N = items.length;
       var me = this;
       var partition = function(items, lo, hi) {
@@ -248,7 +244,6 @@
 
   Heap.prototype = {
     sort: function(items, cmp) {
-      this.trigger('start', items);
       var k;
       var n = items.length;
       for (k = Math.floor(n / 2) - 1; k >= 0; k--) {
