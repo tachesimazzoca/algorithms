@@ -4,7 +4,6 @@
   var Util = algsJS.Util;
   var Events = algsJS.Events;
 
-  // Utility functions
   var exchange = function(a, i, j) {
     var v = a[j];
     a[j] = a[i];
@@ -240,4 +239,43 @@
     }
   };
   Util.extend(Quick3way.prototype, Events);
+
+  /**
+   * @class Heap
+   */
+  var Heap = sort.Heap = function() {
+  };
+
+  Heap.prototype = {
+    sort: function(items, cmp) {
+      this.trigger('start', items);
+      var k;
+      var n = items.length;
+      for (k = Math.floor(n / 2) - 1; k >= 0; k--) {
+        this._sink(items, cmp, k, n);
+      }
+      while (n > 0) {
+        n--;
+        exchange(items, 0, n);
+        this.trigger('exchanged', items, 0, n);
+        this._sink(items, cmp, 0, n);
+      }
+    }
+
+  , _sink: function(a, cmp, k, n) {
+      var i = k;
+      while (true) {
+        var j = (i + 1) * 2 - 1;
+        if (j >= n) break;
+        this.trigger('compare', a, j, j + 1);
+        if (j < (n - 1) && cmp(a[j], a[j + 1]) < 0) j++;
+        this.trigger('compare', a, i, j);
+        if (cmp(a[i], a[j]) >= 0) break;
+        exchange(a, i, j);
+        this.trigger('exchanged', a, i, j);
+        i = j;
+      }
+    }
+  };
+  Util.extend(Heap.prototype, Events);
 })();

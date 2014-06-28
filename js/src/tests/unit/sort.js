@@ -98,4 +98,9 @@
     var sorter = new algsJS.sort.Quick3way();
     testSorter(sorter);
   });
+
+  test("Heap", function() {
+    var sorter = new algsJS.sort.Heap();
+    testSorter(sorter);
+  });
 })();
