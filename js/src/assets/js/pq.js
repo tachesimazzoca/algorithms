@@ -1,25 +1,43 @@
+/**
+ * @module algorithms-js
+ */
 (function() {
   var pq = algsJS.pq = {};
 
   var Util = algsJS.Util;
   var Events = algsJS.Events;
 
-  // Utility functions
   var exchange = function(a, i, j) {
     var v = a[j];
     a[j] = a[i];
     a[i] = v;
   };
 
+  var compare = function(a, b) {
+    if (a < b) {
+      return -1;
+    } else if (a > b) {
+      return 1;
+    } else {
+      return 0;
+    }
+  };
+
   /**
-   * @class PriorityQueue
+   * @class pq.PriorityQueue
+   * @constructor
+   * @param {Function} [cmp] A comparator
    */
   var PriorityQueue = pq.PriorityQueue = function(cmp) {
     this.heap = [];
-    this.comparator = cmp;
+    this.comparator = cmp || compare;
   };
 
   PriorityQueue.prototype = {
+    /**
+     * @method enqueue
+     * @param {Object} v An item to add
+     */
     enqueue: function(v) {
       this.heap.push(v);
       this.trigger('updated', this.heap);
@@ -37,6 +55,10 @@
       } while(i > 0);
     }
 
+    /**
+     * @method dequeue
+     * @return {Object} The maximum item
+     */
   , dequeue: function() {
       var N = this.heap.length;
       if (N === 0) {

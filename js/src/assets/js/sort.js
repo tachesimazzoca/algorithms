@@ -1,3 +1,6 @@
+/**
+ * @module algorithms-js
+ */
 (function() {
   var sort = algsJS.sort = {};
 
@@ -10,14 +13,30 @@
     a[i] = v;
   };
 
+  var compare = function(a, b) {
+    if (a < b) {
+      return -1;
+    } else if (a > b) {
+      return 1;
+    } else {
+      return 0;
+    }
+  };
+
   /**
-   * @class Selection
+   * @class sort.Selection
    */
   var Selection = sort.Selection = function() {
   };
 
   Selection.prototype = {
+    /**
+     * @method sort
+     * @param {Array} items An array of items
+     * @param {Function} [cmp] A comparator 
+     */
     sort: function(items, cmp) {
+      cmp = cmp || compare;
       var N = items.length;
       for (var i = 0; i < N; i++) {
         var min = i;
@@ -33,13 +52,19 @@
   Util.extend(Selection.prototype, Events);
 
   /**
-   * @class Insertion
+   * @class sort.Insertion
    */
   var Insertion = sort.Insertion = function() {
   };
 
   Insertion.prototype = {
+    /**
+     * @method sort
+     * @param {Array} items An array of items
+     * @param {Function} [cmp] A comparator 
+     */
     sort: function(items, cmp) {
+      cmp = cmp || compare;
       var N = items.length;
       for (var i = 0; i < N; i++) {
         for (var j = i; j > 0; j--) {
@@ -54,13 +79,19 @@
   Util.extend(Insertion.prototype, Events);
 
   /**
-   * @class Shell
+   * @class sort.Shell
    */
   var Shell = sort.Shell = function() {
   };
 
   Shell.prototype = {
+    /**
+     * @method sort
+     * @param {Array} items An array of items
+     * @param {Function} [cmp] A comparator 
+     */
     sort: function(items, cmp) {
+      cmp = cmp || compare;
       var N = items.length;
       // use Knuth's 3x+1 increments
       var h = 1;
@@ -116,13 +147,19 @@
   };
 
   /**
-   * @class TopDownMerge
+   * @class sort.TopDownMerge
    */
   var TopDownMerge = sort.TopDownMerge = function() {
   };
 
   TopDownMerge.prototype = {
+    /**
+     * @method sort
+     * @param {Array} items An array of items
+     * @param {Function} [cmp] A comparator 
+     */
     sort: function(items, cmp) {
+      cmp = cmp || compare;
       var me = this;
       var divide = function(lo, hi) {
         if (lo >= hi) return;
@@ -138,13 +175,19 @@
   Util.extend(TopDownMerge.prototype, Events, Mergeable);
 
   /**
-   * @class BottomUpMerge
+   * @class sort.BottomUpMerge
    */
   var BottomUpMerge = sort.BottomUpMerge = function() {
   };
 
   BottomUpMerge.prototype = {
+    /**
+     * @method sort
+     * @param {Array} items An array of items
+     * @param {Function} [cmp] A comparator 
+     */
     sort: function(items, cmp) {
+      cmp = cmp || compare;
       var N = items.length;
       for (var n = 1; n < N; n = n + n) {
         for (var i = 0; i < N - n; i += (n + n)) {
@@ -161,13 +204,19 @@
   Util.extend(BottomUpMerge.prototype, Events, Mergeable);
 
   /**
-   * @class Quick
+   * @class sort.Quick
    */
   var Quick = sort.Quick = function() {
   };
 
   Quick.prototype = {
+    /**
+     * @method sort
+     * @param {Array} items An array of items
+     * @param {Function} [cmp] A comparator 
+     */
     sort: function(items, cmp) {
+      cmp = cmp || compare;
       var N = items.length;
       var me = this;
       var partition = function(items, lo, hi) {
@@ -198,13 +247,19 @@
   Util.extend(Quick.prototype, Events);
 
   /**
-   * @class Quick3way
+   * @class sort.Quick3way
    */
   var Quick3way = sort.Quick3way = function() {
   };
 
   Quick3way.prototype = {
+    /**
+     * @method sort
+     * @param {Array} items An array of items
+     * @param {Function} [cmp] A comparator 
+     */
     sort: function(items, cmp) {
+      cmp = cmp || compare;
       var N = items.length;
       var me = this;
       var partition = function(items, lo, hi) {
@@ -237,13 +292,19 @@
   Util.extend(Quick3way.prototype, Events);
 
   /**
-   * @class Heap
+   * @class sort.Heap
    */
   var Heap = sort.Heap = function() {
   };
 
   Heap.prototype = {
+    /**
+     * @method sort
+     * @param {Array} items An array of items
+     * @param {Function} [cmp] A comparator 
+     */
     sort: function(items, cmp) {
+      cmp = cmp || compare;
       var k;
       var n = items.length;
       for (k = Math.floor(n / 2) - 1; k >= 0; k--) {

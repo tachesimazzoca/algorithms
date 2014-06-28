@@ -5,16 +5,6 @@
     console.log(Array.prototype.slice.call(arguments, 0));
   };
 
-  var cmpInt = function(a, b) {
-    if (a < b) {
-      return -1;
-    } else if (a > b) {
-      return 1;
-    } else {
-      return 0;
-    }
-  };
-
   function testSorter(sorter) {
     testSameNumbers(sorter);
     testBinaryNumbers(sorter);
@@ -25,25 +15,25 @@
 
   function testSameNumbers(sorter) {
     var items = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
-    sorter.sort(items, cmpInt);
+    sorter.sort(items);
     deepEqual(items, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]);
   }
 
   function testBinaryNumbers(sorter) {
     var items = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1];
-    sorter.sort(items, cmpInt);
+    sorter.sort(items);
     deepEqual(items, [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1]);
   }
 
   function testTernaryNumbers(sorter) {
     var items = [1, 2, 0, 0, 1, 0, 1, 1, 2, 0, 1, 2, 1, 1, 0, 1];
-    sorter.sort(items, cmpInt);
+    sorter.sort(items);
     deepEqual(items, [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2]);
   }
 
   function testOrderedNumbers(sorter) {
     var items = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-    sorter.sort(items, cmpInt);
+    sorter.sort(items);
     deepEqual(items, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
   }
 
@@ -53,11 +43,11 @@
     for (i = 0; i < 16; i++) {
       items[i] = Math.floor(Math.random() * 16);
     }
-    sorter.sort(items, cmpInt);
+    sorter.sort(items);
 
     var sorted = true;
     for (i = 0; i < items.length - 1; i++) {
-      if (cmpInt(items[i], items[i + 1]) > 0) {
+      if (items[i] > items[i + 1]) {
         sorted = false; break;
       }
     }

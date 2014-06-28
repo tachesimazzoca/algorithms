@@ -27,8 +27,8 @@
    *
    * @static
    * @method extend
-   * @param {Object} An object that will receive the new properties
-   * @param {Object} Additional objects containing properties to merge in
+   * @param {Object} obj An object that will receive the new properties
+   * @param {Object} [...] Additional objects containing properties to merge in
    */
   Util.extend = function(obj) {
     var args = Array.prototype.slice.call(arguments, 1);
@@ -57,6 +57,11 @@ var Bird = Animal.extend({
    * @class Extendable
    */
   algsJS.Extendable = {
+    /**
+     * @method extend
+     * @param {Object} protoProps
+     * @param {Object} [staticProps]
+     */
     extend: function(protoProps, staticProps) {
       var parent = this;
       var child;
@@ -81,7 +86,16 @@ var Bird = Animal.extend({
     }
   };
 
+  /**
+   * @class Events
+   */
   algsJS.Events = {
+    /**
+     * Fires all bound callbacks.
+     *
+     * @method trigger
+     * @param {String} name The event name
+     */
     trigger: function(name) {
       if (!this._events) return this;
       var evts = this._events[name];
@@ -93,6 +107,13 @@ var Bird = Animal.extend({
       return this;
     }
 
+    /**
+     * Binds an event to a callback function.
+     *
+     * @method on
+     * @param {String} name An event name
+     * @param {Function} f A callback function
+     */
   , on: function(name, f) {
       if (typeof(f) === 'function') {
         this._events = this._events || {};

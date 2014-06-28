@@ -1,10 +1,13 @@
+/**
+ * @module algorithms-js
+ */
 (function() {
   var uf = algsJS.uf = {};
 
   /**
-   * @class QuickFind
+   * @class uf.QuickFind
    * @constructor
-   * @param {Number} N of items
+   * @param {Number} n A number of items
    */
   var QuickFind = uf.QuickFind = function(n) {
     this.idx = [];
@@ -18,10 +21,21 @@
       return this.idx[p];
     }
 
+  /**
+   * @method connected
+   * @param {Number} p
+   * @param {Number} q
+   * @return {Boolean}
+   */
   , connected: function(p, q) {
       return this.idx[p] === this.idx[q];
     }
 
+  /**
+   * @method union
+   * @param {Number} p
+   * @param {Number} q
+   */
   , union: function(p, q) {
       if (!this.connected(p, q)) {
         var i, len;
@@ -37,9 +51,9 @@
   };
 
   /**
-   * @class QuickUnion
+   * @class uf.QuickUnion
    * @constructor
-   * @param {Number} N of items
+   * @param {Number} n A number of items
    */
   var QuickUnion = uf.QuickUnion = function(n) {
     this.idx = [];
@@ -58,10 +72,21 @@
       return q;
     }
 
+  /**
+   * @method connected
+   * @param {Number} p
+   * @param {Number} q
+   * @return {Boolean}
+   */
   , connected: function(p, q) {
       return this.find(p) === this.find(q);
     }
 
+  /**
+   * @method union
+   * @param {Number} p
+   * @param {Number} q
+   */
   , union: function(p, q) {
       var rootP = this.find(p);
       var rootQ = this.find(q);
@@ -72,9 +97,9 @@
   };
 
   /**
-   * @class WeightedQuickUnion
+   * @class uf.WeightedQuickUnion
    * @constructor
-   * @param {Number} N of items
+   * @param {Number} n A number of items
    */
   var WeightedQuickUnion = uf.WeightedQuickUnion = function(n) {
     this.idx = [];
@@ -95,10 +120,21 @@
       return q;
     }
 
+  /**
+   * @method connected
+   * @param {Number} p
+   * @param {Number} q
+   * @return {Boolean}
+   */
   , connected: function(p, q) {
       return this.find(p) === this.find(q);
     }
 
+  /**
+   * @method union
+   * @param {Number} p
+   * @param {Number} q
+   */
   , union: function(p, q) {
       var rootP = this.find(p);
       var rootQ = this.find(q);
