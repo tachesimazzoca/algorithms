@@ -5,15 +5,7 @@
     deepEqual(algsJS.VERSION, "0.0.0");
   });
 
-  test("Util.extend", function() {
-    var Util = algsJS.Util;
-    var obj = Util.extend({}, { foo: "bar", baz: 123 });
-    deepEqual(obj, { foo: "bar", baz: 123 });
-  });
-
   test("Extendable", function() {
-    var Util = algsJS.Util;
-
     var ClassA = function(name) {
       this.name = name;
     };
@@ -31,7 +23,7 @@
     deepEqual(a.getName(), "foo");
     deepEqual(a.setName("bar").getName(), "bar");
 
-    Util.extend(ClassA, algsJS.Extendable);
+    _.extend(ClassA, algsJS.Extendable);
     var ClassB = ClassA.extend({
       constructor: function(name, age) {
         this.age = age;
@@ -47,10 +39,8 @@
   });
 
   test("Events", function() {
-    var Util = algsJS.Util;
-
     var ClassA = function() {};
-    Util.extend(ClassA.prototype, algsJS.Events);
+    _.extend(ClassA.prototype, algsJS.Events);
 
     var a = new ClassA();
     a.on('update', function(key, n, s, a) {

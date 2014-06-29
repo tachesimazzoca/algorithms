@@ -4,7 +4,6 @@
 (function() {
   var sort = algsJS.sort = {};
 
-  var Util = algsJS.Util;
   var Events = algsJS.Events;
 
   var exchange = function(a, i, j) {
@@ -49,7 +48,7 @@
       }
     }
   };
-  Util.extend(Selection.prototype, Events);
+  _.extend(Selection.prototype, Events);
 
   /**
    * @class sort.Insertion
@@ -76,7 +75,7 @@
       }
     }
   };
-  Util.extend(Insertion.prototype, Events);
+  _.extend(Insertion.prototype, Events);
 
   /**
    * @class sort.Shell
@@ -110,7 +109,7 @@
       }
     }
   };
-  Util.extend(Shell.prototype, Events);
+  _.extend(Shell.prototype, Events);
 
   // Mergesort functions
   var Mergeable = {
@@ -172,7 +171,7 @@
       divide(0, items.length - 1);
     }
   };
-  Util.extend(TopDownMerge.prototype, Events, Mergeable);
+  _.extend(TopDownMerge.prototype, Events, Mergeable);
 
   /**
    * @class sort.BottomUpMerge
@@ -201,7 +200,7 @@
       }
     }
   };
-  Util.extend(BottomUpMerge.prototype, Events, Mergeable);
+  _.extend(BottomUpMerge.prototype, Events, Mergeable);
 
   /**
    * @class sort.Quick
@@ -244,7 +243,7 @@
       partition(items, 0, N - 1);
     }
   };
-  Util.extend(Quick.prototype, Events);
+  _.extend(Quick.prototype, Events);
 
   /**
    * @class sort.Quick3way
@@ -289,7 +288,7 @@
       partition(items, 0, N - 1);
     }
   };
-  Util.extend(Quick3way.prototype, Events);
+  _.extend(Quick3way.prototype, Events);
 
   /**
    * @class sort.Heap
@@ -333,5 +332,5 @@
       }
     }
   };
-  Util.extend(Heap.prototype, Events);
+  _.extend(Heap.prototype, Events);
 })();

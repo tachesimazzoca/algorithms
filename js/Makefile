@@ -3,10 +3,12 @@ ARTIFACT=algorithms-js
 all: build
 
 .PHONY: build
-build: node_modules checkstyle
+build: node_modules bower_components checkstyle
 	@install -d build/
 	@rm -rf build/*
 	@cp -R src/* build/.
+	@install -d build/lib/underscore
+	@cp bower_components/underscore/underscore-min.js build/lib/underscore/.
 	@cd build/assets/js/ && cat core.js uf.js sort.js pq.js > $(ARTIFACT).js
 	@./node_modules/.bin/uglifyjs -nc build/assets/js/$(ARTIFACT).js > build/assets/js/$(ARTIFACT).min.js
 
@@ -22,10 +24,14 @@ docs:
 .PHONY: clean
 clean:
 	@rm -rf build/
-	@rm -rf node_mdules/
+	@rm -rf node_modules/
+	@rm -rf bower_components/
 
 node_modules:
 	@npm install
+
+bower_components:
+	@bower install
 
 .PHONY: serve 
 serve:

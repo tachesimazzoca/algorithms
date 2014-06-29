@@ -16,39 +16,12 @@
   };
 
   /**
-   * Provides static utility methods.
-   *
-   * @class Util
-   */
-  var Util = algsJS.Util = {};
-
-  /**
-   * Extends a given object with all the properties
-   *
-   * @static
-   * @method extend
-   * @param {Object} obj An object that will receive the new properties
-   * @param {Object} [...] Additional objects containing properties to merge in
-   */
-  Util.extend = function(obj) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    for (var i = 0; i < args.length; i++) {
-      if (args[i]) {
-        for (var prop in args[i]) {
-          obj[prop] = args[i][prop];
-        }
-      }
-    }
-    return obj;
-  };
-
-  /**
    * Functions to set up the prototype chain.
    *
 <pre><code>var Animal = function(name) {
   this.name = name;
 };
-algsJS.Util.extend(Animal, algsJS.Extendable);
+_.extend(Animal, algsJS.Extendable);
 var Bird = Animal.extend({
   fly: function() { return "Fly! " + this.name; }
 }):
@@ -72,13 +45,13 @@ var Bird = Animal.extend({
         child = function() { return parent.apply(this, arguments); };
       }
 
-      Util.extend(child, parent, staticProps);
+      _.extend(child, parent, staticProps);
 
       var Surrogate = function() { this.constructor = child; };
       Surrogate.prototype = parent.prototype;
       child.prototype = new Surrogate();
 
-      if (protoProps) Util.extend(child.prototype, protoProps);
+      if (protoProps) _.extend(child.prototype, protoProps);
 
       child.__super__ = parent.prototype;
 

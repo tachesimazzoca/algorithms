@@ -4,7 +4,6 @@
 (function() {
   var pq = algsJS.pq = {};
 
-  var Util = algsJS.Util;
   var Events = algsJS.Events;
 
   var exchange = function(a, i, j) {
@@ -87,5 +86,5 @@
       return v;
     }
   };
-  Util.extend(PriorityQueue.prototype, Events);
+  _.extend(PriorityQueue.prototype, Events);
 })();
