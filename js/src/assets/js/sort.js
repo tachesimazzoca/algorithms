@@ -32,7 +32,7 @@
     /**
      * @method sort
      * @param {Array} items An array of items
-     * @param {Function} [cmp] A comparator 
+     * @param {Function} [cmp] A comparator
      */
     sort: function(items, cmp) {
       cmp = cmp || compare;
@@ -60,7 +60,7 @@
     /**
      * @method sort
      * @param {Array} items An array of items
-     * @param {Function} [cmp] A comparator 
+     * @param {Function} [cmp] A comparator
      */
     sort: function(items, cmp) {
       cmp = cmp || compare;
@@ -87,7 +87,7 @@
     /**
      * @method sort
      * @param {Array} items An array of items
-     * @param {Function} [cmp] A comparator 
+     * @param {Function} [cmp] A comparator
      */
     sort: function(items, cmp) {
       cmp = cmp || compare;
@@ -155,7 +155,7 @@
     /**
      * @method sort
      * @param {Array} items An array of items
-     * @param {Function} [cmp] A comparator 
+     * @param {Function} [cmp] A comparator
      */
     sort: function(items, cmp) {
       cmp = cmp || compare;
@@ -183,7 +183,7 @@
     /**
      * @method sort
      * @param {Array} items An array of items
-     * @param {Function} [cmp] A comparator 
+     * @param {Function} [cmp] A comparator
      */
     sort: function(items, cmp) {
       cmp = cmp || compare;
@@ -212,7 +212,7 @@
     /**
      * @method sort
      * @param {Array} items An array of items
-     * @param {Function} [cmp] A comparator 
+     * @param {Function} [cmp] A comparator
      */
     sort: function(items, cmp) {
       cmp = cmp || compare;
@@ -255,7 +255,7 @@
     /**
      * @method sort
      * @param {Array} items An array of items
-     * @param {Function} [cmp] A comparator 
+     * @param {Function} [cmp] A comparator
      */
     sort: function(items, cmp) {
       cmp = cmp || compare;
@@ -290,34 +290,9 @@
   };
   _.extend(Quick3way.prototype, Events);
 
-  /**
-   * @class sort.Heap
-   */
-  var Heap = sort.Heap = function() {
-  };
-
-  Heap.prototype = {
-    /**
-     * @method sort
-     * @param {Array} items An array of items
-     * @param {Function} [cmp] A comparator 
-     */
-    sort: function(items, cmp) {
-      cmp = cmp || compare;
-      var k;
-      var n = items.length;
-      for (k = Math.floor(n / 2) - 1; k >= 0; k--) {
-        this._sink(items, cmp, k, n);
-      }
-      while (n > 0) {
-        n--;
-        exchange(items, 0, n);
-        this.trigger('exchanged', items, 0, n);
-        this._sink(items, cmp, 0, n);
-      }
-    }
-
-  , _sink: function(a, cmp, k, n) {
+  // Binary heap functions
+  var BinaryHeap = {
+    sink: function(a, cmp, k, n) {
       var i = k;
       while (true) {
         var j = (i + 1) * 2 - 1;
@@ -331,6 +306,87 @@
         i = j;
       }
     }
+
+  , swim: function(a, cmp, k) {
+      var i = k;
+      do {
+        var j = Math.floor((i + 1) / 2) - 1;
+        this.trigger('compare', a, j, i);
+        if (cmp(a[j], a[i]) < 0) {
+          exchange(a, j, i);
+          this.trigger('exchanged', a, j, i);
+        }
+        i = Math.floor((i + 1) / 2) - 1;
+      } while(i > 0);
+    }
   };
-  _.extend(Heap.prototype, Events);
+
+  /**
+   * @class sort.Heap
+   */
+  var Heap = sort.Heap = function() {
+  };
+
+  Heap.prototype = {
+    /**
+     * @method sort
+     * @param {Array} items An array of items
+     * @param {Function} [cmp] A comparator
+     */
+    sort: function(items, cmp) {
+      cmp = cmp || compare;
+      var k;
+      var n = items.length;
+      for (k = Math.floor(n / 2) - 1; k >= 0; k--) {
+        this.sink(items, cmp, k, n);
+      }
+      while (n > 0) {
+        n--;
+        exchange(items, 0, n);
+        this.trigger('exchanged', items, 0, n);
+        this.sink(items, cmp, 0, n);
+      }
+    }
+  };
+  _.extend(Heap.prototype, BinaryHeap, Events);
+
+  /**
+   * @class sort.PriorityQueue
+   * @constructor
+   * @param {Function} [cmp] A comparator
+   */
+  var PriorityQueue = sort.PriorityQueue = function(cmp) {
+    this.heap = [];
+    this.comparator = cmp || compare;
+  };
+
+  PriorityQueue.prototype = {
+    /**
+     * @method enqueue
+     * @param {Object} v An item to add
+     */
+    enqueue: function(v) {
+      this.heap.push(v);
+      this.trigger('updated', this.heap);
+      this.swim(this.heap, this.comparator, this.heap.length - 1);
+    }
+
+    /**
+     * @method dequeue
+     * @return {Object} The maximum item
+     */
+  , dequeue: function() {
+      var N = this.heap.length;
+      if (N === 0) {
+        return undefined;
+      }
+      exchange(this.heap, 0, N - 1);
+      this.trigger('exchanged', this.heap, 0, N - 1);
+      var v = this.heap.pop();
+      this.trigger('updated', this.heap);
+      this.sink(this.heap, this.comparator, 0, this.heap.length);
+      return v;
+    }
+  };
+  _.extend(PriorityQueue.prototype, BinaryHeap, Events);
 })();

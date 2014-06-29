@@ -9,7 +9,7 @@ build: node_modules bower_components checkstyle
 	@cp -R src/* build/.
 	@install -d build/lib/underscore
 	@cp bower_components/underscore/underscore-min.js build/lib/underscore/.
-	@cd build/assets/js/ && cat core.js uf.js sort.js pq.js > $(ARTIFACT).js
+	@cd build/assets/js/ && cat core.js uf.js sort.js > $(ARTIFACT).js
 	@./node_modules/.bin/uglifyjs -nc build/assets/js/$(ARTIFACT).js > build/assets/js/$(ARTIFACT).min.js
 
 .PHONY: checkstyle
