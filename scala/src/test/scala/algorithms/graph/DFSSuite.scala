@@ -7,11 +7,9 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class DFSSuite extends FunSuite {
-  test("dfs(empty, 0) throws NoSuchElementException") {
+  test("dfs(empty, 0) returns an empty map") {
     val g = Map.empty[Int, Set[Int]]
-    intercept[NoSuchElementException] {
-      dfs(g, 0)
-    }
+    assert(dfs(g, 0) === Map.empty[Int, Int])
   }
 
   test("dfs(Map(0 -> Set()), 0) returns an empty map") {

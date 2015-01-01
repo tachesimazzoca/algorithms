@@ -6,11 +6,9 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class BFSSuite extends FunSuite {
-  test("bfs(empty, 0) throws NoSuchElementException") {
+  test("bfs(empty, 0) returns an empty map") {
     val g = Map.empty[Int, Set[Int]]
-    intercept[NoSuchElementException] {
-      bfs(g, 0)
-    }
+    assert(bfs(g, 0) === Map.empty[Int, Int])
   }
 
   test("bfs(Map(0 -> Set()), 0) returns an empty map") {
