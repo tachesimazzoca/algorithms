@@ -2,7 +2,10 @@
 /project/project
 /project/target
 /target
+
 /.cache
 /.classpath
 /.project
 /.settings
+
+/.idea
