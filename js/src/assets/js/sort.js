@@ -63,24 +63,25 @@
           if (cmp(items[j], items[min]) < 0) {
             min = j;
             this.trigger('trace', { items: items, state: { min: min }
-                , message: "items[j] is less than items[min], so set min = j" });
+                , message: "If items[j] is less than items[min], then set min = j" });
           } else {
             this.trigger('trace', { items: items
-                , message: "items[j] is not less than items[min], so do nothing" });
+                , message: "If items[j] is not less than items[min], then do nothing" });
           }
         }
         this.trigger('trace', { items: items
             , message: "Compared all items[i..N]" });
         if (i !== min) {
           this.trigger('trace', { items: items
-              , message: "The new minimum value items[min] was found, so exchange items[i] with it." });
+              , message: "The new minimum value items[min] was found." +
+                  " Exchange items[i] with it" });
           exchange(items, min, i);
           this.trigger('trace', { items: items
               , message: "Exchanged items[i] with items[min]" });
         }
       }
       this.trigger('trace', { items: items
-          , message: "Sorted all items." });
+          , message: "Sorted all items[]" });
     }
   };
   _.extend(Selection.prototype, Events);
@@ -122,11 +123,13 @@
               , message: "Compare items[j] to items[j - 1]" });
           if (cmp(items[j], items[j - 1]) >= 0) {
             this.trigger('trace', { items: items
-                , message: "items[j] is not less than items[j - 1], so stop searching items[0..j]" });
+                , message: "If items[j] is not less than items[j - 1]," +
+                    " then stop searching items[0..j]" });
             break;
           }
           this.trigger('trace', { items: items
-              , message: "items[j] is less than items[j - 1], so exchange items[j - 1] with it." });
+              , message: "If items[j] is less than items[j - 1]," +
+                  " then exchange items[j - 1] with it" });
           exchange(items, j, j - 1);
           this.trigger('trace', { items: items
               , message: "Exchanged items[j - 1] with items[j]" });
@@ -135,7 +138,7 @@
             , message: "Compared all items[0..j]" });
       }
       this.trigger('trace', { items: items
-          , message: "Sorted all items." });
+          , message: "Sorted all items[]" });
     }
   };
   _.extend(Insertion.prototype, Events);
@@ -160,7 +163,8 @@
       var maxH = Math.floor(N / 3);
       while (h < maxH) h = 3 * h + 1;
       this.trigger('trace', { items: items, state: { h: h }
-          , message: "Using Knuth's 3x+1 increments, set the initial step h = " + h + "" });
+          , message: "Using Knuth's 3x+1 increments," +
+              " set the initial step h = " + h + "" });
 
       while (h >= 1) {
         this.trigger('trace', { items: items
@@ -185,11 +189,13 @@
                 , message: "Compare items[j] to items[j - h]" });
             if (cmp(items[j], items[j - h]) >= 0) {
               this.trigger('trace', { items: items
-                  , message: "items[j] is not less than items[j - h], so stop searching items[0..j by h]" });
+                  , message: "If items[j] is not less than items[j - h]," +
+                      " then stop searching items[0..j by h]" });
               break;
             }
             this.trigger('trace', { items: items
-                , message: "items[j] is less than items[j - h], so exchange items[j - h] with it" });
+                , message: "If items[j] is less than items[j - h]," +
+                    " then exchange items[j - h] with it" });
             exchange(items, j, j - h);
             this.trigger('trace', { items: items
                 , message: "Exchanged items[j - h] with items[j]" });
@@ -202,7 +208,7 @@
             , message: "Update the step h = h / 3" });
       }
       this.trigger('trace', { items: items
-          , message: "Sorted all items" });
+          , message: "Sorted all items[]" });
     }
   };
   _.extend(Shell.prototype, Events);
@@ -255,7 +261,8 @@
           } else {
             // Copy the current left-side aux item. (left <= right)
             this.trigger('trace', { items: items, aux: aux
-                , message: "If aux[hiP] is not less than aux[loP], then copy aux[loP] to items[i]" });
+                , message: "If aux[hiP] is not less than aux[loP]," +
+                    " then copy aux[loP] to items[i]" });
             items[i] = aux[loP];
             this.trigger('trace', { items: items, aux: aux
                 , message: "Copied aux[loP] to items[i]" });
@@ -301,7 +308,7 @@
       };
       divide(0, items.length - 1);
       me.trigger('trace', { items: items
-          , message: "Sorted all items" });
+          , message: "Sorted all items[]" });
     }
   };
   _.extend(TopDownMerge.prototype, Events, Mergeable);
