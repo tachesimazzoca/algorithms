@@ -37,15 +37,50 @@
     sort: function(items, cmp) {
       cmp = cmp || compare;
       var N = items.length;
-      for (var i = 0; i < N; i++) {
-        var min = i;
-        for (var j = i; j < N; j++) {
-          this.trigger('compare', items, j, min);
-          if (cmp(items[j], items[min]) < 0) min = j;
+      var i;
+      for (i = 0; i < N; i++) {
+        if (i === 0) {
+          this.trigger('trace', { items: items, state: { i: i }
+              , message: "Set i = " + i });
+        } else {
+            this.trigger('trace', { items: items, state: { i: i }
+                , message: "Increment i" });
         }
-        exchange(items, min, i);
-        this.trigger('exchanged', items, min, i);
+        var min = i;
+        this.trigger('trace', { items: items, state: { min: min }
+            , message: "Set min = i" });
+        var j;
+        for (j = i + 1; j < N; j++) {
+          if (j === i + 1) {
+            this.trigger('trace', { items: items, state: { j: j }
+                , message: "Set j = i + 1" });
+          } else {
+            this.trigger('trace', { items: items, state: { j: j }
+                , message: "Increment j" });
+          }
+          this.trigger('trace', { items: items
+              , message: "Compare items[j] to items[min]" });
+          if (cmp(items[j], items[min]) < 0) {
+            min = j;
+            this.trigger('trace', { items: items, state: { min: min }
+                , message: "items[j] is less than items[min], so set min = j" });
+          } else {
+            this.trigger('trace', { items: items
+                , message: "items[j] is not less than items[min], so do nothing" });
+          }
+        }
+        this.trigger('trace', { items: items
+            , message: "Compared all items[i..N]" });
+        if (i !== min) {
+          this.trigger('trace', { items: items
+              , message: "The new minimum value items[min] was found, so exchange items[i] with it." });
+          exchange(items, min, i);
+          this.trigger('trace', { items: items
+              , message: "Exchanged items[i] with items[min]" });
+        }
       }
+      this.trigger('trace', { items: items
+          , message: "Sorted all items." });
     }
   };
   _.extend(Selection.prototype, Events);
@@ -65,14 +100,42 @@
     sort: function(items, cmp) {
       cmp = cmp || compare;
       var N = items.length;
-      for (var i = 0; i < N; i++) {
-        for (var j = i; j > 0; j--) {
-          this.trigger('compare', items, j, j - 1);
-          if (cmp(items[j], items[j - 1]) >= 0) break;
-          exchange(items, j, j - 1);
-          this.trigger('exchanged', items, j, j - 1);
+      var i;
+      for (i = 1; i < N; i++) {
+        if (i === 1) {
+          this.trigger('trace', { items: items, state: { i: i }
+              , message: "Set i = 1" });
+        } else {
+          this.trigger('trace', { items: items, state: { i: i }
+              , message: "Increment i" });
         }
+        var j;
+        for (j = i; j > 0; j--) {
+          if (j === i) {
+            this.trigger('trace', { items: items, state: { j: j }
+                , message: "Set j = i" });
+          } else {
+            this.trigger('trace', { items: items, state: { j: j }
+                , message: "Decrement j" });
+          }
+          this.trigger('trace', { items: items
+              , message: "Compare items[j] to items[j - 1]" });
+          if (cmp(items[j], items[j - 1]) >= 0) {
+            this.trigger('trace', { items: items
+                , message: "items[j] is not less than items[j - 1], so stop searching items[0..j]" });
+            break;
+          }
+          this.trigger('trace', { items: items
+              , message: "items[j] is less than items[j - 1], so exchange items[j - 1] with it." });
+          exchange(items, j, j - 1);
+          this.trigger('trace', { items: items
+              , message: "Exchanged items[j - 1] with items[j]" });
+        }
+        this.trigger('trace', { items: items
+            , message: "Compared all items[0..j]" });
       }
+      this.trigger('trace', { items: items
+          , message: "Sorted all items." });
     }
   };
   _.extend(Insertion.prototype, Events);
@@ -96,17 +159,50 @@
       var h = 1;
       var maxH = Math.floor(N / 3);
       while (h < maxH) h = 3 * h + 1;
+      this.trigger('trace', { items: items, state: { h: h }
+          , message: "Using Knuth's 3x+1 increments, set the initial step h = " + h + "" });
 
       while (h >= 1) {
+        this.trigger('trace', { items: items
+            , message: "Begin " + h + "-sort" });
         for (var i = h; i < N; i++) {
+          if (i === h) {
+            this.trigger('trace', { items: items, state: { i: i }
+                , message: "Set i = h" });
+          } else {
+            this.trigger('trace', { items: items, state: { i: i }
+                , message: "Increment i" });
+          }
           for (var j = i; j >= h; j -= h) {
-            this.trigger('compare', items, j, j - h);
-            if (cmp(items[j], items[j - h]) >= 0) break;
+            if (j === i) {
+              this.trigger('trace', { items: items, state: { j: j }
+                  , message: "Set j = i" });
+            } else {
+              this.trigger('trace', { items: items, state: { j: j }
+                  , message: "Decrement j by h" });
+            }
+            this.trigger('trace', { items: items
+                , message: "Compare items[j] to items[j - h]" });
+            if (cmp(items[j], items[j - h]) >= 0) {
+              this.trigger('trace', { items: items
+                  , message: "items[j] is not less than items[j - h], so stop searching items[0..j by h]" });
+              break;
+            }
+            this.trigger('trace', { items: items
+                , message: "items[j] is less than items[j - h], so exchange items[j - h] with it" });
             exchange(items, j, j - h);
+            this.trigger('trace', { items: items
+                , message: "Exchanged items[j - h] with items[j]" });
           }
         }
+        this.trigger('trace', { items: items
+            , message: "Compared all items[0..N by " + h + "]" });
         h = Math.floor(h / 3);
+        this.trigger('trace', { items: items, state: { h: h }
+            , message: "Update the step h = h / 3" });
       }
+      this.trigger('trace', { items: items
+          , message: "Sorted all items" });
     }
   };
   _.extend(Shell.prototype, Events);
