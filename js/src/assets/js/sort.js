@@ -211,33 +211,57 @@
   var Mergeable = {
     merge: function(items, cmp, lo, mid, hi) {
       var aux = items.slice(lo, hi + 1);
-      var loP = lo;
-      var hiP = mid + 1;
+      this.trigger('trace', { items: items, aux: aux
+          , message: "Copy items[lo..hi] to aux[]" });
+      var loP = 0;
+      this.trigger('trace', { items: items, aux: aux, state: { loP: loP }
+          , message: "Set loP = 0" });
+      var hiP = (mid + 1) - lo;
+      this.trigger('trace', { items: items, aux: aux, state: { hiP: hiP }
+          , message: "Set hiP = (mid + 1) - lo" });
       for (var i = lo; i <= hi; i++) {
-        if (loP > mid) {
+        if (i === lo) {
+          this.trigger('trace', { items: items, aux: aux, state: { i: i }
+              , message: "Set i = lo" });
+        } else {
+          this.trigger('trace', { items: items, aux: aux, state: { i: i }
+              , message: "Increment i" });
+        }
+        if ((loP + lo) > mid) {
           // The left-side aux items are empty. Do nothing.
           //items[i] = aux[hiP - lo];
           hiP++;
-        } else if (hiP > hi) {
+        } else if ((hiP + lo) > hi) {
           // The right-side aux items are empty. Copy all left-side aux items.
-          items[i] = aux[loP - lo];
-          this.trigger('exchanged', items, i, loP - lo);
+          items[i] = aux[loP];
+          this.trigger('trace', { items: items, aux: aux
+              , message: "If the right-side aux[hiP] are empty, then copy aux[loP] to items[i]" });
           loP++;
+          this.trigger('trace', { items: items, aux: aux, state: { loP: loP }
+              , message: "Increment loP" });
         } else {
-          this.trigger('compare', items, hiP - lo, loP - lo);
-          if (cmp(aux[hiP - lo], aux[loP - lo]) < 0) {
+          if (cmp(aux[hiP], aux[loP]) < 0) {
             // Copy the current right-side aux item. (left > right)
-            items[i] = aux[hiP - lo];
-            this.trigger('exchanged', items, i, hiP - lo);
+            items[i] = aux[hiP];
+            this.trigger('trace', { items: items, aux: aux
+                , message: "If aux[hiP] is less than aux[loP], then copy aux[hiP] to items[i]" });
             hiP++;
+            this.trigger('trace', { items: items, aux: aux, state: { hiP: hiP }
+                , message: "Increment hiP" });
           } else {
             // Copy the current left-side aux item. (left <= right)
-            items[i] = aux[loP - lo];
-            this.trigger('exchanged', items, i, loP - lo);
+            items[i] = aux[loP];
+            this.trigger('trace', { items: items, aux: aux
+                , message: "If aux[hiP] is not less than aux[loP], then copy aux[loP] to items[i]" });
             loP++;
+            this.trigger('trace', { items: items, aux: aux, state: { loP: loP }
+                , message: "Increment loP" });
           }
         }
       }
+      this.trigger('trace', { items: items, aux: undefined
+          , state: { loP: undefined, hiP: undefined, i: undefined }
+          , message: "Merged all aux[]" });
     }
   };
 
@@ -258,13 +282,20 @@
       var me = this;
       var divide = function(lo, hi) {
         if (lo >= hi) return;
+        me.trigger('trace', { items: items, state: { lo: lo, mid: undefined, hi: hi }
+            , message: "Divide items[lo..hi]" });
         var mid = lo + Math.floor((hi - lo) / 2);
+        me.trigger('trace', { items: items, state: { mid: mid }
+            , message: "Set mid = " + mid });
         divide(lo, mid);
         divide(mid + 1, hi);
+        me.trigger('trace', { items: items, state: { lo: lo, mid: mid, hi: hi }
+            , message: "Merge items[lo..mid..hi]" });
         me.merge(items, cmp, lo, mid, hi);
-        me.trigger('merged', items, lo, mid, hi);
       };
       divide(0, items.length - 1);
+      me.trigger('trace', { items: items
+          , message: "Sorted all items" });
     }
   };
   _.extend(TopDownMerge.prototype, Events, Mergeable);
