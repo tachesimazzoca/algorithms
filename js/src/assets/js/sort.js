@@ -70,7 +70,7 @@
           }
         }
         this.trigger('trace', { items: items
-            , message: "Compared all items[i..N]" });
+            , message: "Compared items[i..N]" });
         if (i !== min) {
           this.trigger('trace', { items: items
               , message: "The new minimum value items[min] was found." +
@@ -81,7 +81,7 @@
         }
       }
       this.trigger('trace', { items: items
-          , message: "Sorted all items[]" });
+          , message: "Sorted items[]" });
     }
   };
   _.extend(Selection.prototype, Events);
@@ -135,10 +135,10 @@
               , message: "Exchanged items[j - 1] with items[j]" });
         }
         this.trigger('trace', { items: items
-            , message: "Compared all items[0..j]" });
+            , message: "Compared items[0..j]" });
       }
       this.trigger('trace', { items: items
-          , message: "Sorted all items[]" });
+          , message: "Sorted items[]" });
     }
   };
   _.extend(Insertion.prototype, Events);
@@ -202,13 +202,13 @@
           }
         }
         this.trigger('trace', { items: items
-            , message: "Compared all items[0..N by " + h + "]" });
+            , message: "Compared items[0..N by " + h + "]" });
         h = Math.floor(h / 3);
         this.trigger('trace', { items: items, state: { h: h }
             , message: "Update the step h = h / 3" });
       }
       this.trigger('trace', { items: items
-          , message: "Sorted all items[]" });
+          , message: "Sorted items[]" });
     }
   };
   _.extend(Shell.prototype, Events);
@@ -308,7 +308,7 @@
       };
       divide(0, items.length - 1);
       me.trigger('trace', { items: items
-          , message: "Sorted all items[]" });
+          , message: "Sorted items[]" });
     }
   };
   _.extend(TopDownMerge.prototype, Events, Mergeable);
@@ -340,7 +340,7 @@
         }
       }
       this.trigger('trace', { items: items
-          , message: "Sorted all items" });
+          , message: "Sorted items[]" });
     }
   };
   _.extend(BottomUpMerge.prototype, Events, Mergeable);
@@ -363,27 +363,57 @@
       var me = this;
       var partition = function(items, lo, hi) {
         if (lo >= hi) return;
-        var loP = lo + 1;
-        var hiP = hi;
+        var gt = lo + 1;
+        var lt = hi;
+        me.trigger('trace', { items: items, state: { lo: lo, hi: hi, gt: gt, lt: lt }
+            , message: "Sort items[lo..hi]. The partitioning item is items[lo]." });
         while (true) {
-          while (cmp(items[loP], items[lo]) <= 0 && loP < hi) {
-            me.trigger('compare', items, loP, lo);
-            loP++;
+          // Scan items[gt]
+          me.trigger('trace', { items: items
+              , message: "Scan for items[gt] that is greater than the partitioning items[lo]" });
+          while (cmp(items[gt], items[lo]) <= 0 && gt < hi) {
+            gt++;
           }
-          while (cmp(items[hiP], items[lo]) >= 0 && hiP > lo) {
-            me.trigger('compare', items, hiP, lo);
-            hiP--;
+          me.trigger('trace', { items: items, state: { gt: gt }
+              , message: "Found items[gt] > items[lo]" });
+
+          // Scan items[lt]
+          me.trigger('trace', { items: items
+              , message: "Scan for items[lt] that is less than the partitioning items[lo]" });
+          while (cmp(items[lt], items[lo]) >= 0 && lt > lo) {
+            lt--;
           }
-          if (loP >= hiP) break;
-          exchange(items, loP, hiP);
-          me.trigger('exchanged', items, loP, hiP);
+          me.trigger('trace', { items: items, state: { lt: lt }
+              , message: "Found items[lt] < items[lo]" });
+
+          if (gt >= lt) {
+            me.trigger('trace', { items: items
+                , message: "if the indicies gt >= lt (i.e. every entry has been partitioned)," +
+                  " then stop scanning" });
+            break;
+          }
+          me.trigger('trace', { items: items
+              , message: "Exchange items[gt] with items[lt]" });
+          exchange(items, gt, lt);
         }
-        exchange(items, lo, hiP);
-        me.trigger('exchanged', items, lo, hiP);
-        partition(items, lo, hiP - 1);
-        partition(items, loP, hi);
+        if (lo !== lt) {
+            me.trigger('trace', { items: items
+                , message: "Exchange the partitioning items[lo] with items[lt]" });
+            exchange(items, lo, lt);
+        }
+
+        me.trigger('trace', { items: items, state: { lo: lo, hi: hi, gt: gt, lt: lt }
+            , message: "Partition items[lo..lt - 1]" });
+        partition(items, lo, lt - 1);
+
+        me.trigger('trace', { items: items, state: { lo: lo, hi: hi, gt: gt, lt: lt }
+            , message: "Partition items[gt..hi]" });
+        partition(items, gt, hi);
       };
       partition(items, 0, N - 1);
+      this.trigger('trace', { items: items
+          , state: { lo: 0, hi: N - 1, gt: undefined, lt: undefined }
+          , message: "Sorted items[]" });
     }
   };
   _.extend(Quick.prototype, Events);
