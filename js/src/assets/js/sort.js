@@ -366,7 +366,7 @@
         var gt = lo + 1;
         var lt = hi;
         me.trigger('trace', { items: items, state: { lo: lo, hi: hi, gt: gt, lt: lt }
-            , message: "Sort items[lo..hi]. The partitioning item is items[lo]." });
+            , message: "Sort items[lo..hi]. The partitioning item is items[lo]" });
         while (true) {
           // Scan items[gt]
           me.trigger('trace', { items: items
@@ -439,26 +439,54 @@
         var midP = lo;
         var loP = lo + 1;
         var hiP = hi;
+        me.trigger('trace', { items: items
+            , state: { lo: lo, hi: hi, midP: midP, loP: loP, hiP: hiP }
+            , message: "Sort items[lo..hi]. The partitioning block is items[midP..loP - 1]" });
         while (loP <= hiP) {
-          me.trigger('compare', items, loP, midP);
+          me.trigger('trace', { items: items
+              , state: { midP: midP, loP: loP, hiP: hiP }
+              , message: "Compare items[loP] to items[midP]" });
           var cp = cmp(items[loP], items[midP]);
           if (cp > 0) {
+            me.trigger('trace', { items: items
+                , message: "If items[loP] is greater than items[midP]," +
+                    " then exchange items[loP] with items[hiP]" });
             exchange(items, loP, hiP);
-            me.trigger('exchanged', items, loP, hiP);
+
+            me.trigger('trace', { items: items
+                , message: "Decrement hiP" });
             hiP--;
           } else if (cp < 0) {
+            me.trigger('trace', { items: items
+                , message: "If items[loP] is less than items[midP]," +
+                    " then exchange items[loP] with items[midP]" });
             exchange(items, loP, midP);
-            me.trigger('exchanged', items, loP, midP);
+
+            me.trigger('trace', { items: items
+                , message: "Increment loP and midP" });
             loP++;
             midP++;
           } else {
+            me.trigger('trace', { items: items
+                , message: "If items[loP] is equal to items[midP]," +
+                    " then increment loP" });
             loP++;
           }
         }
+        me.trigger('trace', { items: items
+            , state: { lo: lo, hi: hi, loP: loP, midP: midP, hiP: hiP }
+            , message: "Partition items[lo..midP - 1]" });
         partition(items, lo, midP - 1);
+
+        me.trigger('trace', { items: items
+            , state: { lo: lo, hi: hi, loP: loP, midP: midP, hiP: hiP }
+            , message: "Partition items[loP..hi]" });
         partition(items, loP, hi);
       };
       partition(items, 0, N - 1);
+      this.trigger('trace', { items: items
+          , state: { lo: 0, hi: N - 1, midP: undefined, loP: undefined, hiP: undefined }
+          , message: "Sorted items[]" });
     }
   };
   _.extend(Quick3way.prototype, Events);
