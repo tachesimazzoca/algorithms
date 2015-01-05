@@ -41,7 +41,7 @@
       for (i = 0; i < N; i++) {
         if (i === 0) {
           this.trigger('trace', { items: items, state: { i: i }
-              , message: "Set i = " + i });
+              , message: "Set i = 0" });
         } else {
             this.trigger('trace', { items: items, state: { i: i }
                 , message: "Increment i" });
@@ -63,21 +63,21 @@
           if (cmp(items[j], items[min]) < 0) {
             min = j;
             this.trigger('trace', { items: items, state: { min: min }
-                , message: "If items[j] is less than items[min], then set min = j" });
+                , message: "If items[j] is less than items[min]," +
+                    " then set min = j as a minmun entry" });
           } else {
             this.trigger('trace', { items: items
                 , message: "If items[j] is not less than items[min], then do nothing" });
           }
         }
         this.trigger('trace', { items: items
-            , message: "Compared items[i..N]" });
+            , message: "Scanned items[i..N]" });
         if (i !== min) {
           this.trigger('trace', { items: items
-              , message: "The new minimum value items[min] was found." +
-                  " Exchange items[i] with it" });
+              , message: "The new minimum entry items[min] was found" });
           exchange(items, min, i);
           this.trigger('trace', { items: items
-              , message: "Exchanged items[i] with items[min]" });
+              , message: "Exchange items[i] with items[min]" });
         }
       }
       this.trigger('trace', { items: items
@@ -124,18 +124,17 @@
           if (cmp(items[j], items[j - 1]) >= 0) {
             this.trigger('trace', { items: items
                 , message: "If items[j] is not less than items[j - 1]," +
-                    " then stop searching items[0..j]" });
+                    " then stop scanning items[0..j]" });
             break;
           }
           this.trigger('trace', { items: items
-              , message: "If items[j] is less than items[j - 1]," +
-                  " then exchange items[j - 1] with it" });
+              , message: "items[j] is less than items[j - 1]"});
           exchange(items, j, j - 1);
           this.trigger('trace', { items: items
-              , message: "Exchanged items[j - 1] with items[j]" });
+              , message: "Exchange items[j - 1] with items[j]" });
         }
         this.trigger('trace', { items: items
-            , message: "Compared items[0..j]" });
+            , message: "Scanned items[0..j]" });
       }
       this.trigger('trace', { items: items
           , message: "Sorted items[]" });
@@ -190,22 +189,26 @@
             if (cmp(items[j], items[j - h]) >= 0) {
               this.trigger('trace', { items: items
                   , message: "If items[j] is not less than items[j - h]," +
-                      " then stop searching items[0..j by h]" });
+                      " then stop scanning items[0..j by h]" });
               break;
             }
             this.trigger('trace', { items: items
-                , message: "If items[j] is less than items[j - h]," +
-                    " then exchange items[j - h] with it" });
+                , message: "items[j] is less than items[j - h]" });
             exchange(items, j, j - h);
             this.trigger('trace', { items: items
                 , message: "Exchanged items[j - h] with items[j]" });
           }
         }
-        this.trigger('trace', { items: items
-            , message: "Compared items[0..N by " + h + "]" });
-        h = Math.floor(h / 3);
-        this.trigger('trace', { items: items, state: { h: h }
-            , message: "Update the step h = h / 3" });
+        this.trigger('trace', { items: items, state: { i: undefined, j: undefined }
+            , message: "Scanned items[0..N by " + h + "]" });
+
+        if (h > 1) {
+          h = Math.floor(h / 3);
+          this.trigger('trace', { items: items, state: { h: h }
+              , message: "Update h = h / 3" });
+        } else {
+          break;
+        }
       }
       this.trigger('trace', { items: items
           , message: "Sorted items[]" });
@@ -239,33 +242,27 @@
         } else if ((hiP + lo) > hi) {
           // Every hi-side aux[] entry has been copied. Just copy the
           // remaining lo-side aux[] entries.
-          this.trigger('trace', { items: items, aux: aux
-              , message: "If aux[hiP] is empty, then copy aux[loP] to items[i]" });
           items[i] = aux[loP];
           this.trigger('trace', { items: items, aux: aux
-              , message: "Copied aux[loP] to items[i]" });
+              , message: "If aux[hiP] is empty, then copy aux[loP] to items[i]" });
           loP++;
           this.trigger('trace', { items: items, aux: aux, state: { loP: loP }
               , message: "Increment loP" });
         } else {
           if (cmp(aux[hiP], aux[loP]) < 0) {
             // Copy the current right-side aux item. (left > right)
-            this.trigger('trace', { items: items, aux: aux
-                , message: "If aux[hiP] is less than aux[loP], then copy aux[hiP] to items[i]" });
             items[i] = aux[hiP];
             this.trigger('trace', { items: items, aux: aux
-                , message: "Copied aux[hiP] to items[i]" });
+                , message: "If aux[hiP] is less than aux[loP], then copy aux[hiP] to items[i]" });
             hiP++;
             this.trigger('trace', { items: items, aux: aux, state: { hiP: hiP }
                 , message: "Increment hiP" });
           } else {
             // Copy the current left-side aux item. (left <= right)
+            items[i] = aux[loP];
             this.trigger('trace', { items: items, aux: aux
                 , message: "If aux[hiP] is not less than aux[loP]," +
                     " then copy aux[loP] to items[i]" });
-            items[i] = aux[loP];
-            this.trigger('trace', { items: items, aux: aux
-                , message: "Copied aux[loP] to items[i]" });
             loP++;
             this.trigger('trace', { items: items, aux: aux, state: { loP: loP }
                 , message: "Increment loP" });
@@ -274,7 +271,7 @@
       }
       this.trigger('trace', { items: items, aux: undefined
           , state: { loP: undefined, hiP: undefined, i: undefined }
-          , message: "Merged all aux[]" });
+          , message: "Merged aux[] into items[]" });
     }
   };
 
@@ -392,14 +389,14 @@
                   " then stop scanning" });
             break;
           }
+          exchange(items, gt, lt);
           me.trigger('trace', { items: items
               , message: "Exchange items[gt] with items[lt]" });
-          exchange(items, gt, lt);
         }
         if (lo !== lt) {
+            exchange(items, lo, lt);
             me.trigger('trace', { items: items
                 , message: "Exchange the partitioning items[lo] with items[lt]" });
-            exchange(items, lo, lt);
         }
 
         me.trigger('trace', { items: items, state: { lo: lo, hi: hi, gt: gt, lt: lt }
@@ -448,29 +445,29 @@
               , message: "Compare items[loP] to items[midP]" });
           var cp = cmp(items[loP], items[midP]);
           if (cp > 0) {
+            exchange(items, loP, hiP);
             me.trigger('trace', { items: items
                 , message: "If items[loP] is greater than items[midP]," +
                     " then exchange items[loP] with items[hiP]" });
-            exchange(items, loP, hiP);
 
-            me.trigger('trace', { items: items
-                , message: "Decrement hiP" });
             hiP--;
+            me.trigger('trace', { items: items, state: { hiP: hiP }
+                , message: "Decrement hiP" });
+
           } else if (cp < 0) {
+            exchange(items, loP, midP);
             me.trigger('trace', { items: items
                 , message: "If items[loP] is less than items[midP]," +
                     " then exchange items[loP] with items[midP]" });
-            exchange(items, loP, midP);
-
-            me.trigger('trace', { items: items
-                , message: "Increment loP and midP" });
             loP++;
             midP++;
+            me.trigger('trace', { items: items, state: { loP: loP, midP: midP }
+                , message: "Increment loP and midP" });
           } else {
+            loP++;
             me.trigger('trace', { items: items
                 , message: "If items[loP] is equal to items[midP]," +
                     " then increment loP" });
-            loP++;
           }
         }
         me.trigger('trace', { items: items

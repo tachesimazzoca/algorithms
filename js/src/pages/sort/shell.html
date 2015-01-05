@@ -36,7 +36,7 @@
       });
     });
 
-    sorter.sort([2, 8, 1, 4, 5, 9, 0, 7, 6, 3, 4, 7, 2, 9, 7, 8]);
+    sorter.sort([2, 8, 1, 4, 5, 9, 0, 7, 6, 3]);
     var $messageBlock = $('#jsMessageBlock');
     var $visualBlock = $('#jsVisualBlock');
 
@@ -45,15 +45,12 @@
       var html = '<table border="1">';
       var base = trace.state.i || 0;
       var h = trace.state.h || 0;
-      if (h > 0)
-        html += '<caption>h = ' + h + '</caption';
-      else
-        html += '<caption>h = ?</caption>';
       html += '<tr><th>i</th><th>j</th><th>items[]</th></tr>';
       var i;
       for (i = 0; i < trace.items.length; i++) {
         var s = '';
-        if (h > 0 && ((trace.state.i - i) % h) !== 0)
+        if (h > 0 && typeof(trace.state.i) != 'undefined' &&
+            ((trace.state.i - i) % h) !== 0)
           s = ' style="background-color: #ccc"'; 
         else
           s = '';
