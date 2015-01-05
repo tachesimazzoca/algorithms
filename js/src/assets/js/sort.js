@@ -491,17 +491,41 @@
   // Binary heap functions
   var BinaryHeap = {
     sink: function(a, cmp, k, n) {
+      this.trigger('trace', { items: a, state: { k: k }
+          , message: "Scan items[k..]" });
       var i = k;
+      this.trigger('trace', { items: a, state: { i: i }
+          , message: "Set i = k" });
       while (true) {
+        // Set the index of the a[i]'s left-child to j
         var j = (i + 1) * 2 - 1;
         if (j >= n) break;
-        this.trigger('compare', a, j, j + 1);
-        if (j < (n - 1) && cmp(a[j], a[j + 1]) < 0) j++;
-        this.trigger('compare', a, i, j);
-        if (cmp(a[i], a[j]) >= 0) break;
+        this.trigger('trace', { items: a, state: { j: j }
+            , message: "Scan for items[j] that is greater than items[i]." +
+                " Set j = (i + 1) * 2 - 1" });
+        // Scan for a index of the entry that is greater than items[i]
+        if (j < (n - 1) && cmp(a[j], a[j + 1]) < 0) {
+          j++;
+          this.trigger('trace', { items: a, state: { j: j }
+              , message: "If items[j] is less than item[j + 1], then increment j" });
+        }
+        this.trigger('trace', { items: a
+            , message: "Compare items[i] to items[j]" });
+        if (cmp(a[i], a[j]) >= 0) {
+         this.trigger('trace', { items: a
+             , message: "If items[j] is greater than items[i], then stop sinking" });
+          break;
+        }
+
+        // Sink items[i] to items[j]
+        this.trigger('trace', { items: a
+            , message: "items[i] is less than items[j]" });
         exchange(a, i, j);
-        this.trigger('exchanged', a, i, j);
+        this.trigger('trace', { items: a
+            , message: "Exchange items[i] with items[j]" });
         i = j;
+        this.trigger('trace', { items: a, state: { i: i }
+            , message: "Set i = j" });
       }
     }
 
@@ -535,15 +559,27 @@
       cmp = cmp || compare;
       var k;
       var n = items.length;
+      this.trigger('trace', { items: items
+          , message: "Prepare a binary heap of items[]" });
       for (k = Math.floor(n / 2) - 1; k >= 0; k--) {
         this.sink(items, cmp, k, n);
       }
+      this.trigger('trace', { items: items
+          , message: "Prepared the binary heap of items[]" });
       while (n > 0) {
         n--;
+        this.trigger('trace', { items: items
+            , state: { n: n, k: undefined, i: undefined, j: undefined }
+            , message: "items[0] is the maximum entry" });
         exchange(items, 0, n);
-        this.trigger('exchanged', items, 0, n);
+        this.trigger('trace', { items: items
+            , state: { n: n, i: undefined, j: undefined }
+            , message: "Exchange items[0] with items[n]" });
         this.sink(items, cmp, 0, n);
       }
+      this.trigger('trace', { items: items
+          , state: { n: undefined, k: undefined, i: undefined, j: undefined }
+          , message: "Sorted items[]" });
     }
   };
   _.extend(Heap.prototype, BinaryHeap, Events);
