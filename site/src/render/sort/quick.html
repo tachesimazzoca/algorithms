@@ -1,0 +1,76 @@
+---
+title: "Quick Sort"
+layout: "sort"
+---
+
+<button id="jsNextButton">Next</button>
+<button id="jsResetButton">Reset</button>
+<div>
+  <p id="jsMessageBlock"></p>
+</div>
+<div id="jsVisualBlock"></div>
+
+<script type="text/javascript">
+(function($) {
+  $(function() {
+    var operations = [];
+    var state = {};
+    var sorter = new algsJS.sort.Quick();
+    sorter.on('trace', function(name, o) {
+      state = _.extend(state, o.state || {})
+      operations.push({
+        name: name
+      , items: _.clone(o.items)
+      , state: _.clone(state)
+      , message: o.message
+      });
+    });
+
+    sorter.sort([2, 8, 1, 4, 5, 9, 0, 7, 6, 3, 4, 7, 2, 9, 7, 8]);
+    var $messageBlock = $('#jsMessageBlock');
+    var $visualBlock = $('#jsVisualBlock');
+
+    var tracer = new algsJS.trace.Tracer(operations, function (trace) {
+      $messageBlock.text(trace.message);
+      var aux = trace.aux || [];
+      var html = '<table border="1">';
+      html += '<tr><th>lo</th><th>hi</th><th>items[]</th>';
+      html += '<th>gt</th><th>lt</th></tr>';
+      var i;
+      for (i = 0; i < trace.items.length; i++) {
+        var s = '';
+        if (i < trace.state.lo || i > trace.state.hi)
+          s = ' style="background-color: #ccc"';
+        else
+          s = '';
+
+        // items
+        html += '<tr' + s + '><td>';
+        if (trace.state.lo === i)
+          html += '*';
+        html += '</td><td>';
+        if (trace.state.hi === i)
+          html += '*';
+        html += '</td><td>' + trace.items[i] + '</td><td>';
+        if (trace.state.gt === i)
+          html += '*';
+        html += '</td><td>';
+        if (trace.state.lt === i)
+          html += '*';
+        html += '</td></tr>';
+      }
+      html += '</table>';
+      $visualBlock.html(html);
+    });
+    tracer.trace();
+
+    $('#jsNextButton').on('click', function() {
+      tracer.trace();
+    });
+    $('#jsResetButton').on('click', function() {
+      tracer.reset();
+      tracer.trace();
+    });
+  });
+})(jQuery);
+</script>

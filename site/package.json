@@ -1,0 +1,14 @@
+{
+  "name": "algorithms-site",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "docpad": "6.69.2",
+    "docpad-plugin-eco": "2.1",
+    "docpad-plugin-marked": "2.2.1"
+  },
+  "main": "node_modules/docpad/bin/docpad-server",
+  "scripts": {
+    "start": "node_modules/docpad/bin/docpad-server"
+  }
+}
