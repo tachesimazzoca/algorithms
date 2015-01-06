@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <title><%= if @document.title then "#{@document.title} | Algorithms" else "Algorithms" %></title>
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
-  <script type="text/javascript" src="../lib/underscore/underscore-min.js"></script>
-  <script type="text/javascript" src="../lib/algorithms-js/js/core.js"></script>
-  <script type="text/javascript" src="../lib/algorithms-js/js/sort.js"></script>
-  <script type="text/javascript" src="../lib/algorithms-js/js/trace.js"></script>
+  <script type="text/javascript" src="../../assets/lib/underscore/underscore-min.js"></script>
+  <script type="text/javascript" src="../../assets/lib/algorithms-js/js/core.js"></script>
+  <script type="text/javascript" src="../../assets/lib/algorithms-js/js/sort.js"></script>
+  <script type="text/javascript" src="../../assets/lib/algorithms-js/js/trace.js"></script>
 </head>
 <body>
 <h1><%= @document.title %></h1>
