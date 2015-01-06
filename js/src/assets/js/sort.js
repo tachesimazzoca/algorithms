@@ -491,8 +491,10 @@
   // Binary heap functions
   var BinaryHeap = {
     sink: function(a, cmp, k, n) {
-      this.trigger('trace', { items: a, state: { k: k }
-          , message: "Scan items[k..]" });
+      if (a.length === 0)
+        return;
+      this.trigger('trace', { items: a, state: { k: k, n: n }
+          , message: "Sink items[k..n-1]" });
       var i = k;
       this.trigger('trace', { items: a, state: { i: i }
           , message: "Set i = k" });
@@ -501,13 +503,12 @@
         var j = (i + 1) * 2 - 1;
         if (j >= n) break;
         this.trigger('trace', { items: a, state: { j: j }
-            , message: "Scan for items[j] that is greater than items[i]." +
-                " Set j = (i + 1) * 2 - 1" });
+            , message: "Scan for items[j] that is greater than items[i]" });
         // Scan for a index of the entry that is greater than items[i]
         if (j < (n - 1) && cmp(a[j], a[j + 1]) < 0) {
           j++;
           this.trigger('trace', { items: a, state: { j: j }
-              , message: "If items[j] is less than item[j + 1], then increment j" });
+              , message: "If items[j] is less than items[j + 1], then increment j" });
         }
         this.trigger('trace', { items: a
             , message: "Compare items[i] to items[j]" });
@@ -527,19 +528,42 @@
         this.trigger('trace', { items: a, state: { i: i }
             , message: "Set i = j" });
       }
+      this.trigger('trace', { items: a
+          , message: "Sinked items[k..n-1]" });
     }
 
   , swim: function(a, cmp, k) {
-      var i = k;
+      if (k === 0)
+        return;
+      this.trigger('trace', { items: a
+          , state: { k: k, i: undefined, j: undefined }
+          , message: "Swim items[0..k]" });
+      var j = k;
+      this.trigger('trace', { items: a, state: { j: j }
+          , message: "Set j = k" });
       do {
-        var j = Math.floor((i + 1) / 2) - 1;
-        this.trigger('compare', a, j, i);
-        if (cmp(a[j], a[i]) < 0) {
-          exchange(a, j, i);
-          this.trigger('exchanged', a, j, i);
+        var i = Math.floor((j + 1) / 2) - 1;
+        this.trigger('trace', { items: a, state: { i: i }
+            , message: "Set the parent index of items[j] to i." +
+                " Scan for items[i] that is less than items[j]" });
+        if (cmp(a[i], a[j]) < 0) {
+          exchange(a, i, j);
+          this.trigger('trace', { items: a
+              , message: "If items[i] is less than items[j]," +
+                  " then exchange items[i] with items[j]" });
+        } else {
+          this.trigger('trace', { items: a
+              , message: "If items[i] is not less than items[j]," +
+                  " then stop swimming" });
+          break;
         }
-        i = Math.floor((i + 1) / 2) - 1;
-      } while(i > 0);
+        j = i;
+        this.trigger('trace', { items: a, state: { j: j }
+            , message: "Set j = i" });
+      } while(j > 0);
+      this.trigger('trace', { items: a
+          , state: { k: k, i: undefined, j: undefined }
+          , message: "Swimmed items[]" });
     }
   };
 
@@ -560,7 +584,9 @@
       var k;
       var n = items.length;
       this.trigger('trace', { items: items
-          , message: "Prepare a binary heap of items[]" });
+          , message: "Prepare a binary heap of items[]." +
+              " Start sinking from the middle of items[]" +
+                  " because the lower half of items[] never have their own children" });
       for (k = Math.floor(n / 2) - 1; k >= 0; k--) {
         this.sink(items, cmp, k, n);
       }
@@ -601,24 +627,31 @@
      */
     enqueue: function(v) {
       this.heap.push(v);
-      this.trigger('updated', this.heap);
+      this.trigger('trace', { items: this.heap, state: { v: v }
+          , message: "Enqueue " + v });
       this.swim(this.heap, this.comparator, this.heap.length - 1);
     }
 
     /**
      * @method dequeue
-     * @return {Object} The maximum item
+     * @return {Object} The maximum entry
      */
   , dequeue: function() {
       var N = this.heap.length;
       if (N === 0) {
         return undefined;
       }
+      this.trigger('trace', { items: this.heap
+          , message: "Dequeue the maximum entry" });
       exchange(this.heap, 0, N - 1);
-      this.trigger('exchanged', this.heap, 0, N - 1);
+      this.trigger('trace', { items: this.heap
+          , message: "Exchange items[0] with items[N - 1]" });
+
       var v = this.heap.pop();
-      this.trigger('updated', this.heap);
+      this.trigger('trace', { items: this.heap
+          , message: "Pop the maximum entry at the bottom of items[]" });
       this.sink(this.heap, this.comparator, 0, this.heap.length);
+
       return v;
     }
   };
