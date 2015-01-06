@@ -2,3 +2,5 @@
 /out
 /node_modules
 /bower_components
+/src/static/assets/lib/underscore-*
+/src/static/assets/lib/jquery-*

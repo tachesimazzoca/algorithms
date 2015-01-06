@@ -1,0 +1,8 @@
+{
+  "name": "algorithms-site",
+  "version": "0.0.0",
+  "dependencies": {
+    "underscore": "1.5.2",
+    "jquery": "1.11.2"
+  }
+}
