@@ -4,11 +4,12 @@ all: build
 
 .PHONY: build
 build: node_modules bower_components checkstyle
-	@install -d build/
+	@install -d build
 	@rm -rf build/*
-	@cp -R src/* build/.
 	@install -d build/lib/underscore
 	@cp bower_components/underscore/underscore-min.js build/lib/underscore/.
+	@cp -R src/tests build/.
+	@cp -R src/assets build/.
 	@cd build/assets/js/ && cat core.js uf.js sort.js st.js > $(ARTIFACT).js
 	@./node_modules/.bin/uglifyjs -nc build/assets/js/$(ARTIFACT).js > build/assets/js/$(ARTIFACT).min.js
 
