@@ -11,7 +11,7 @@ build: node_modules bower_components checkstyle
 	@cp -R src/tests build/.
 	@cp -R src/assets build/.
 	@cd build/assets/js/ && cat core.js uf.js sort.js st.js > $(ARTIFACT).js
-	@./node_modules/.bin/uglifyjs -nc build/assets/js/$(ARTIFACT).js > build/assets/js/$(ARTIFACT).min.js
+	@./node_modules/.bin/uglifyjs build/assets/js/$(ARTIFACT).js > build/assets/js/$(ARTIFACT).min.js
 
 .PHONY: checkstyle
 checkstyle: node_modules

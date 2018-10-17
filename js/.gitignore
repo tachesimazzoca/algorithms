@@ -1,4 +1,7 @@
 *~
-/build
+
+/package-lock.json
 /node_modules
 /bower_components
+
+/build
