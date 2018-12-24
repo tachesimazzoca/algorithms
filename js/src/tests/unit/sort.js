@@ -10,6 +10,7 @@
     testBinaryNumbers(sorter);
     testTernaryNumbers(sorter);
     testOrderedNumbers(sorter);
+    testSpecificNumbers(sorter);
     testRandomNumbers(sorter);
   }
 
@@ -35,6 +36,12 @@
     var items = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
     sorter.sort(items);
     deepEqual(items, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
+  }
+
+  function testSpecificNumbers(sorter) {
+    var items = [5, 3, 8, 5, 5, 1, 7, 9, 7, 4, 2];
+    sorter.sort(items);
+    deepEqual(items, [1, 2, 3, 4, 5, 5, 5, 7, 7, 8, 9]);
   }
 
   function testRandomNumbers(sorter) {
